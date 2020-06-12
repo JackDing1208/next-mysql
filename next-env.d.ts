@@ -9,3 +9,9 @@ declare module "*.jpg" {
   const value: any
   export default value
 }
+
+declare interface IUser {
+  id: number
+  name: string
+  age: number
+}
