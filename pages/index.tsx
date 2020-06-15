@@ -8,7 +8,23 @@ import {NextPage} from "next"
 
 const Home: NextPage = () => {
   const [userList, setList] = useState<Array<IUser>>([])
-
+  const [username, setUsername] = useState<string>("")
+  const [age, setAge] = useState<string>("")
+  const createUser = () => {
+    axios.post("/api/v1/users", {name: username, age: age}).then((res) => {
+      if (res.status === 200) {
+        const item = res.data
+        setList(list => [...list, item])
+      }
+    })
+  }
+  const deleteUser = (id: number) => {
+    axios.delete("/api/v1/users", {data: {id: id}}).then((res) => {
+      if (res.status === 200) {
+        console.log(res.data)
+      }
+    })
+  }
   useEffect(() => {
     axios.get("/api/v1/users").then((res) => {
       if (res.status === 200) {
@@ -31,10 +47,16 @@ const Home: NextPage = () => {
             <div>{user.id}</div>
             <div>{user.name}</div>
             <div>{user.age}</div>
-            <button>delete</button>
+            <button onClick={() => {deleteUser(user.id)}}>delete</button>
           </div>
         )
       })}
+
+      <div>
+        <input type="text" value={username} onChange={(e) => {setUsername(e.target.value)}}/>
+        <input type="text" value={age} onChange={(e) => {setAge(e.target.value)}}/>
+        <button onClick={createUser}>create</button>
+      </div>
 
       <style jsx>{`
         .container {
